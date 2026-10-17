@@ -10,7 +10,7 @@ WORKDIR /app
 # ffmpeg/ffprobe are used for normalization and stitching; curl installs Deno,
 # which current yt-dlp builds can use for YouTube's JavaScript challenge solver.
 RUN apt-get update && apt-get install -y --no-install-recommends \
-      ca-certificates curl ffmpeg \
+      ca-certificates curl ffmpeg unzip \
     && rm -rf /var/lib/apt/lists/* \
     && curl -fsSL https://deno.land/install.sh | DENO_INSTALL=/usr/local sh \
     && test -x /usr/local/bin/deno
