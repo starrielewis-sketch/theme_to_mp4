@@ -82,6 +82,32 @@ streamlit run app.py
 
 Streamlit prints a local URL (normally `http://localhost:8501`). Choose a provider, enter the theme and URLs, set the preferred transcript languages, then click **Extract and build MP4**.
 
+## Deploy online (Render + Docker)
+
+You can host the app at a public HTTPS URL instead of running it on your computer. This project includes a `Dockerfile` and `render.yaml` configured for Render. A Render account and a Git repository are required; this project cannot be published to a public host directly from this chat.
+
+1. Create a GitHub repository and upload the files from this project ZIP to the repository root (`app.py`, `pipeline.py`, `llm_clients.py`, `requirements.txt`, `Dockerfile`, `render.yaml`, and the `tests/` folder).
+2. Sign in to [Render](https://render.com/), choose **New → Blueprint**, and connect the GitHub repository containing `render.yaml`. Alternatively, create a **Web Service** from the repository and select its Docker runtime.
+3. Deploy the service. Render will build the Docker image with Python, FFmpeg/ffprobe, and Deno. The app should bind to the port Render provides.
+4. In the service's **Environment** settings, add `OPENAI_API_KEY` as a secret if you plan to use OpenAI. Do not put secrets in source files or commit them to Git.
+5. Open the `onrender.com` URL Render provides, choose the provider, enter your theme and URLs, and run the pipeline.
+
+### Hosting considerations
+
+- Render's free web services use an ephemeral filesystem and can spin down after inactivity. Generated MP4s and manifests are temporary; download outputs promptly. Free-tier resource and runtime constraints can make long or high-resolution jobs fail. Consult [Render's current free-instance limits](https://render.com/docs/free) before processing large jobs.
+- On a hosted server, `http://localhost:11434` points to the server/container, not Ollama on your laptop. For hosted Ollama, provide a secure, reachable endpoint and protect it with appropriate network controls. Do not expose an unauthenticated Ollama port to the public internet.
+- OpenAI use incurs API charges according to your account and model. The API key should be configured as a hosting secret.
+- Before exposing the app publicly, consider access controls and rate limits; anyone who can reach an unprotected instance may consume compute or API budget.
+
+### Build and run the Docker image locally
+
+```bash
+docker build -t theme-to-mp4 .
+docker run --rm -p 8501:8501 -e OPENAI_API_KEY="$OPENAI_API_KEY" theme-to-mp4
+```
+
+Then open <http://localhost:8501>.
+
 ## Output files
 
 Each run creates a unique folder beneath `outputs/`:

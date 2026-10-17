@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: theme-to-mp4
+    runtime: docker
+    plan: free
+    healthCheckPath: /_stcore/health
+    envVars:
+      - key: PORT
+        value: "10000"

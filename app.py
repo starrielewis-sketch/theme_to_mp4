@@ -50,7 +50,11 @@ with st.form("theme_to_mp4_form"):
         else:
             model = st.text_input("Ollama model", value="llama3.2:3b", help="Pull this model first with `ollama pull llama3.2:3b`, or enter another installed model tag.")
             api_key = None
-            ollama_base_url = st.text_input("Ollama base URL", value=os.getenv("OLLAMA_HOST", "http://localhost:11434"))
+            ollama_base_url = st.text_input(
+                "Ollama base URL",
+                value=os.getenv("OLLAMA_HOST", "http://localhost:11434"),
+                help="When hosted online, localhost refers to the server, not your personal computer. Use a secured, reachable Ollama endpoint if the model runs elsewhere.",
+            )
     with col_b:
         language_text = st.text_input("Preferred transcript languages", value="en", help="Comma-separated language codes in preference order, e.g. en,fr,de.")
         st.info("Long transcripts are split into caption-aligned chunks. Each model result is validated before it can trigger a download.")
